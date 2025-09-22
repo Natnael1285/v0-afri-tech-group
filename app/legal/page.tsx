@@ -113,8 +113,8 @@ export default function LegalPage() {
 
               <h3 className="font-serif text-lg font-semibold mb-3">6. Contact Us</h3>
               <p className="text-muted-foreground">
-                If you have any questions about this Privacy Policy, please contact us at privacy@afritechgroup.com or
-                write to us at 123 Technology Avenue, Victoria Island, Lagos, Nigeria.
+                If you have any questions about this Privacy Policy, please contact us at afritech2050@gmail.com or
+                office adddress @ Mexico Sengatera, Traders union Building 8th Floor, Addis Ababa, Ethiopia.
               </p>
             </CardContent>
           </Card>
@@ -174,8 +174,8 @@ export default function LegalPage() {
 
               <h3 className="font-serif text-lg font-semibold mb-3">6. Governing Law</h3>
               <p className="text-muted-foreground">
-                These terms shall be governed by and construed in accordance with the laws of Nigeria, without regard to
-                its conflict of law provisions. Any disputes shall be resolved in the courts of Lagos State, Nigeria.
+                These terms shall be governed by and construed in accordance with the laws of Ethiopia, without regard to
+                its conflict of law provisions. Any disputes shall be resolved in the courts Ethiopia.
               </p>
             </CardContent>
           </Card>
