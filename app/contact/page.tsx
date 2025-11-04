@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { MapPin, Phone, Mail, Clock, Send, MessageSquare, Users, Globe } from "lucide-react"
+import { MapPin, Phone, Mail, Send, Globe } from "lucide-react"
 
 export default function ContactPage() {
   return (
@@ -44,18 +44,9 @@ export default function ContactPage() {
                       <MapPin className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-serif text-lg font-semibold mb-2">Headquarters</h3>
+                      <h3 className="font-serif text-lg font-semibold mb-2">Address</h3>
                       <p className="text-muted-foreground">
-                        <a
-                          href="https://maps.app.goo.gl/uTRW38qNhCZv5wRN8"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:text-primary transition-colors"
-                        >
-                          Click here for exact location
-                        </a>
-                        <br />
-                        Addis Ababa, Ethiopia
+                        Mexico Sengatera, Traders Union Building, 8th Floor
                       </p>
                     </div>
                   </div>
@@ -67,18 +58,10 @@ export default function ContactPage() {
                       <Phone className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-serif text-lg font-semibold mb-2">Phone Numbers</h3>
+                      <h3 className="font-serif text-lg font-semibold mb-2">Phone</h3>
                       <p className="text-muted-foreground">
-                        <a href="tel:+251911353887" className="hover:text-primary">
-                          +251 911 353 887
-                        </a>
-                        <br />
-                        <a href="tel:+251972446733" className="hover:text-primary">
-                          +251 972 446 733
-                        </a>
-                        <br />
-                        <a href="tel:+251929481206" className="hover:text-primary">
-                          +251 929 481 206
+                        <a href="tel:+251911041620" className="hover:text-primary">
+                          +251 91 104 1620
                         </a>
                       </p>
                     </div>
@@ -104,39 +87,18 @@ export default function ContactPage() {
                 <Card className="p-6 hover:shadow-lg transition-shadow border-l-4 border-l-primary">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-gradient-brand rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Clock className="h-6 w-6 text-white" />
+                      <Globe className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-serif text-lg font-semibold mb-2">Business Hours</h3>
+                      <h3 className="font-serif text-lg font-semibold mb-2">Website</h3>
                       <p className="text-muted-foreground">
-                        Monday - Friday: 8:00 AM - 5:00 PM
-                        <br />
-                        Saturday: 9:00 AM - 12:00 PM EAT
-                        <br />
-                        Sunday: Closed
+                        <a href="https://www.afritechplc.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
+                          www.afritechplc.com
+                        </a>
                       </p>
                     </div>
                   </div>
                 </Card>
-              </div>
-
-              {/* Social Media Links */}
-              <div>
-                <h3 className="font-serif text-lg font-semibold mb-4">Follow Us</h3>
-                <div className="flex gap-4">
-                  <Button variant="outline" size="sm" className="bg-transparent">
-                    LinkedIn
-                  </Button>
-                  <Button variant="outline" size="sm" className="bg-transparent">
-                    Twitter
-                  </Button>
-                  <Button variant="outline" size="sm" className="bg-transparent">
-                    Facebook
-                  </Button>
-                  <Button variant="outline" size="sm" className="bg-transparent">
-                    Instagram
-                  </Button>
-                </div>
               </div>
             </div>
 
@@ -226,7 +188,7 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-serif font-bold mb-4">Find Us</h2>
-            <p className="text-muted-foreground">Visit our headquarters in Addis Ababa, Ethiopia.</p>
+            <p className="text-muted-foreground">Visit our office at Mexico Sengatera, Traders Union Building, 8th Floor.</p>
           </div>
 
           <Card className="overflow-hidden shadow-lg">
@@ -248,55 +210,6 @@ export default function ContactPage() {
               </div>
             </div>
           </Card>
-        </div>
-      </section>
-
-      {/* Quick Contact Options */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-serif font-bold mb-4">Quick Contact</h2>
-            <p className="text-muted-foreground">Choose the best way to reach us based on your needs.</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow border-2 hover:border-primary">
-              <div className="w-16 h-16 bg-gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="font-serif text-xl font-semibold mb-3">General Inquiries</h3>
-              <p className="text-muted-foreground mb-4">
-                For general questions about our services and company information.
-              </p>
-              <Button variant="outline" className="bg-transparent">
-                <a href="mailto:afritech2050@gmail.com">afritech2050@gmail.com</a>
-              </Button>
-            </Card>
-
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow border-2 hover:border-primary">
-              <div className="w-16 h-16 bg-gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="font-serif text-xl font-semibold mb-3">Sales & Partnerships</h3>
-              <p className="text-muted-foreground mb-4">
-                Ready to start a project or explore partnership opportunities.
-              </p>
-              <Button variant="outline" className="bg-transparent">
-                <a href="mailto:afritech2050@gmail.com">afritech2050@gmail.com</a>
-              </Button>
-            </Card>
-
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow border-2 hover:border-primary">
-              <div className="w-16 h-16 bg-gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
-                <Globe className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="font-serif text-xl font-semibold mb-3">Technical Support</h3>
-              <p className="text-muted-foreground mb-4">Need help with existing services or technical assistance.</p>
-              <Button variant="outline" className="bg-transparent">
-                <a href="mailto:afritech2050@gmail.com">afritech2050@gmail.com</a>
-              </Button>
-            </Card>
-          </div>
         </div>
       </section>
 
@@ -341,11 +254,6 @@ export default function ContactPage() {
                 <li>
                   <a href="/about" className="hover:text-white">
                     About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="/careers" className="hover:text-white">
-                    Careers
                   </a>
                 </li>
                 <li>

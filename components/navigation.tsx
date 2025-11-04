@@ -10,8 +10,7 @@ const navigationItems = [
   { name: "About Us", href: "/about" },
   { name: "Services", href: "/services" },
   { name: "Projects", href: "/projects" },
-  { name: "Careers", href: "/careers" },
-  { name: "Partners & Clients", href: "/partners" },
+  { name: "Partners", href: "/partners" },
   { name: "Contact", href: "/contact" },
   { name: "Legal", href: "/legal" },
 ]

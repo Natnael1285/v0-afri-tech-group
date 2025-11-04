@@ -11,8 +11,7 @@ const navigationItems = [
   { name: "Services", href: "/services" },
   { name: "Projects", href: "/projects" },
   { name: "Blog", href: "/blog" },
-  { name: "Careers", href: "/careers" },
-  { name: "Partners & Clients", href: "/partners" },
+  { name: "Partners", href: "/partners" },
   { name: "Contact", href: "/contact" },
   { name: "Legal", href: "/legal" },
 ]

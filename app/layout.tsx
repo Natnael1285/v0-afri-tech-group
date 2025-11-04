@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Playfair_Display, Inter } from "next/font/google"
 import "./globals.css"
 import LoadingIntro from "@/components/loading-intro"
+import ChatBot from "@/components/chatbot"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body>
         <LoadingIntro />
         {children}
+        <ChatBot />
       </body>
     </html>
   )

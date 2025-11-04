@@ -1,272 +1,167 @@
+"use client"
+
 import { Navigation } from "@/components/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, Calendar, Users, ArrowRight } from "lucide-react"
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards"
+import { ExternalLink, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 export default function ProjectsPage() {
+  const projects = [
+    {
+      id: 1,
+      title: "NSAA Blog & Info Portal",
+      client: "Nineteen Sixty-three African Aerospace PLC",
+      description: "AfriTech developed a dynamic blog and content platform for NSAA, enabling them to showcase their work, projects, and innovations in African aerospace.",
+      features: [
+        "Interactive Blog Gallery: Share articles, news, and insights about aerospace and satellite technology.",
+        "Company Info & Highlights: Clearly display NSAA's mission, vision, and ongoing initiatives.",
+        "User-Friendly Navigation: Designed for both experts and the general public to explore easily.",
+        "Scalable & Modern Tech Stack: Ensures the platform can grow as NSAA expands its reach.",
+      ],
+      impact: "The platform allows NSAA to communicate achievements, share expertise, and inspire stakeholders across the continent, positioning them as Africa's leader in aerospace and satellite development.",
+      link: "https://aersospacemain.onrender.com/",
+      badge: "Web Platform",
+    },
+    {
+      id: 2,
+      title: "Leave Management System",
+      client: "Hope Enterprise College",
+      description: "AfriTech developed a custom leave management platform for Hope Enterprise College, designed to simplify internal employee management and streamline HR operations.",
+      features: [
+        "Employee Leave Tracking: Monitor vacation, sick leave, and other absences in real-time.",
+        "Automated Approval Workflows: Managers can approve or reject requests digitally, reducing paperwork.",
+        "Attendance & Reporting: Generate insights into employee attendance trends and leave balances.",
+        "User-Friendly Interface: Accessible via web for staff and management, making HR operations smoother.",
+      ],
+      impact: "The system increased operational efficiency, reduced manual HR errors, and improved employee satisfaction, enabling the college to focus on its core mission: education.",
+      link: "https://lvms.heuc.edu.et/",
+      badge: "Management System",
+    },
+    {
+      id: 3,
+      title: "Pharmacy Management System",
+      client: "PharmaCare",
+      description: "AfriTech developed a comprehensive pharmacy management system for PharmaCare, enabling full control over operations and inventory management.",
+      features: [
+        "Inventory Tracking: Monitor all medications in stock, including quantities and expiration dates.",
+        "Automated Alerts: Receive notifications for out-of-stock or expired products.",
+        "Purchase & Sales Management: Easily record medicine purchases, sales transactions, and updates in real-time.",
+        "Integrated Reporting: Generate detailed reports on sales, stock levels, and product movements.",
+        "User-Friendly Interface: Designed for pharmacy staff to manage operations efficiently and accurately.",
+      ],
+      impact: "The system reduced errors, optimized stock management, and improved operational efficiency, allowing PharmaCare to deliver reliable service and maintain regulatory compliance.",
+      link: "https://pharmacy-managemet-system-15.onrender.com",
+      badge: "Management System",
+    },
+    {
+      id: 4,
+      title: "Digital Marketing Platform",
+      client: "Rentless Marketing",
+      description: "AfriTech partnered with Rentless Marketing, a marketing agency helping businesses dominate their markets, to enhance their digital presence and campaign effectiveness.",
+      features: [
+        "Modern UI/UX Design: Clean, intuitive interface for clients and internal teams.",
+        "Content Management: Flexible CMS for easy website and social media updates.",
+        "Optimized Experience: Mobile-friendly, fast, and user-centric design.",
+        "Campaign Tools: Integrated SEO, analytics, and lead generation features.",
+      ],
+      impact: "Improved client engagement, streamlined campaign management, and increased online visibility for Rentless Marketing and its clients.",
+      link: "https://www.relentlessmkting.com/",
+      badge: "Web Platform",
+    },
+    {
+      id: 5,
+      title: "Student Management System",
+      client: "Hope Enterprise University College",
+      description: "AfriTech is developing an AI-enhanced Student Management System to streamline academic and administrative processes at Hope Enterprise University College.",
+      features: [
+        "Smart Administration: Manage grades, exams, registration, attendance, and student records in one platform.",
+        "AI-Enhanced Features: Automation and intelligent analytics for faster decisions.",
+        "Optimized User Experience: Intuitive, responsive interface for students, faculty, and administrators.",
+        "Comprehensive Management Tools: Dashboards, reports, notifications, and analytics for full oversight.",
+      ],
+      impact: "Simplifies university operations, reduces administrative workload, and empowers the university community with a smarter, technology-driven approach to student management.",
+      badge: "AI-Enhanced System",
+      ongoing: true,
+    },
+  ]
+
+  const projectItems = projects.map((project) => ({
+    id: project.id,
+    content: (
+      <Card className="h-full p-4 border border-border bg-card hover:shadow-lg transition-shadow">
+        <div className="space-y-3">
+          <div>
+            <Badge className="bg-primary text-primary-foreground mb-2 text-xs">{project.badge}</Badge>
+            <h3 className="text-lg font-serif font-bold mb-1 text-card-foreground">{project.title}</h3>
+            <p className="text-xs text-muted-foreground">{project.client}</p>
+            {project.ongoing && (
+              <Badge variant="outline" className="mt-1 text-xs border-primary text-primary">
+                Ongoing
+              </Badge>
+            )}
+          </div>
+          <p className="text-xs text-card-foreground line-clamp-3">{project.description}</p>
+          <div>
+            <p className="font-semibold text-xs mb-1 text-card-foreground">Impact:</p>
+            <p className="text-[10px] text-muted-foreground line-clamp-3">{project.impact}</p>
+          </div>
+          {project.link && (
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-primary hover:text-primary/80 font-medium text-xs"
+            >
+              View Project <ExternalLink className="h-3 w-3" />
+            </a>
+          )}
+        </div>
+      </Card>
+    ),
+  }))
+
   return (
     <div className="min-h-screen">
       <Navigation />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-background via-background to-muted py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl lg:text-6xl font-serif font-bold mb-6">
-            Our <span className="text-gradient-brand">Portfolio</span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Discover our successful projects across technology, finance, and international trade. Each project
-            represents our commitment to excellence and innovation.
-          </p>
-        </div>
-      </section>
-
-      {/* Filter Tabs */}
-      <section className="py-8 bg-white border-b">
+      {/* Projects */}
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-4">
-            <Badge variant="default" className="px-4 py-2 bg-primary text-primary-foreground">
-              All Projects
-            </Badge>
-            <Badge
-              variant="outline"
-              className="px-4 py-2 hover:bg-primary hover:text-primary-foreground cursor-pointer"
-            >
-              Technology
-            </Badge>
-            <Badge
-              variant="outline"
-              className="px-4 py-2 hover:bg-primary hover:text-primary-foreground cursor-pointer"
-            >
-              Finance
-            </Badge>
-            <Badge
-              variant="outline"
-              className="px-4 py-2 hover:bg-primary hover:text-primary-foreground cursor-pointer"
-            >
-              Import/Export
-            </Badge>
-          </div>
-        </div>
-      </section>
-
-      {/* Technology Projects */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-16">
-            <h2 className="text-3xl font-serif font-bold mb-4">Technology Solutions</h2>
-            <p className="text-muted-foreground">
-              Innovative software applications and digital platforms we've developed for our clients.
+          <div className="mb-6 text-center">
+            <h2 className="text-3xl lg:text-4xl font-serif font-bold mb-4">Our Projects</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Innovative software solutions we've developed for businesses and institutions across Africa.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
-                <img
-                  src="/images/agribank-mobile.png"
-                  alt="AgriBank Mobile App"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-4 left-4">
-                  <Badge className="bg-primary text-primary-foreground">Mobile App</Badge>
-                </div>
-              </div>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="font-serif">AgriBank Mobile App</CardTitle>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                </div>
-                <CardDescription>
-                  Revolutionary mobile banking solution for agricultural financing across West Africa.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>Completed: December 2025</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>50,000+ Active Users</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      React Native
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Node.js
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      MongoDB
-                    </Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
-                <img
-                  src="/images/ecotrade-platform.png"
-                  alt="EcoTrade Platform"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-4 left-4">
-                  <Badge className="bg-primary text-primary-foreground">Web Platform</Badge>
-                </div>
-              </div>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="font-serif">EcoTrade Platform</CardTitle>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                </div>
-                <CardDescription>
-                  B2B e-commerce platform connecting African exporters with global importers.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>Completed: November 2025</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>2,500+ Registered Traders</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      Next.js
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      PostgreSQL
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Stripe
-                    </Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
-                <img
-                  src="/images/financeflow-erp.png"
-                  alt="FinanceFlow ERP"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute top-4 left-4">
-                  <Badge className="bg-primary text-primary-foreground">Enterprise Software</Badge>
-                </div>
-              </div>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="font-serif">FinanceFlow ERP</CardTitle>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                </div>
-                <CardDescription>
-                  Comprehensive ERP system for mid-size financial institutions across Africa.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>Completed: October 2025</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>15 Financial Institutions</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      Angular
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      .NET Core
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      SQL Server
-                    </Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Finance & Trade Projects */}
-      <section className="py-20 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-16">
-            <h2 className="text-3xl font-serif font-bold mb-4">Finance & Trade Solutions</h2>
-            <p className="text-muted-foreground">
-              Strategic consulting and trade facilitation services launching soon.
-            </p>
-          </div>
-
-          <div className="text-center py-16">
-            <div className="max-w-2xl mx-auto">
-              <div className="bg-white rounded-lg p-12 shadow-lg">
-                <div className="mb-6">
-                  <div className="w-16 h-16 bg-gradient-brand rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Calendar className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-serif font-bold mb-4">Coming Soon</h3>
-                  <p className="text-muted-foreground mb-6">
-                    Our finance and trade solutions are currently in development. We're preparing comprehensive services
-                    including investment banking, trade facilitation, and strategic consulting to help businesses across
-                    Africa grow and expand globally.
-                  </p>
-                  <Badge variant="outline" className="px-4 py-2 text-primary border-primary">
-                    Launching Q2 2026
-                  </Badge>
-                </div>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 bg-primary rounded-full"></span>
-                    <span>Investment Banking & Consulting</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 bg-primary rounded-full"></span>
-                    <span>Import/Export Trade Facilitation</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 bg-primary rounded-full"></span>
-                    <span>Strategic Business Development</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="h-[28rem] rounded-md flex flex-col antialiased bg-background items-center justify-center relative overflow-hidden">
+            <InfiniteMovingCards items={projectItems} direction="right" speed="slow" pauseOnHover={true} />
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-gradient-brand">
+      <section className="py-20 bg-secondary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-serif font-bold text-white mb-6">Ready to Start Your Project?</h2>
-          <p className="text-xl text-white/90 mb-8 leading-relaxed">
-            Join our portfolio of successful projects. Let's discuss how we can bring your vision to life with our
-            expertise and innovation.
+          <h2 className="text-3xl lg:text-4xl font-serif font-bold text-secondary-foreground mb-6">
+            Ready to Transform Your Business?
+          </h2>
+          <p className="text-xl text-secondary-foreground/90 mb-8 leading-relaxed">
+            Join hundreds of satisfied clients who trust Afri Tech Group for their technology, finance, and business needs across Africa and beyond.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
-              Start Your Project
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-primary bg-transparent"
-            >
-              View More Projects
-            </Button>
+            <Link href="/contact">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-primary hover:bg-white hover:text-secondary"
+              >
+                Contact Us
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -312,11 +207,6 @@ export default function ProjectsPage() {
                 <li>
                   <a href="/about" className="hover:text-white">
                     About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="/careers" className="hover:text-white">
-                    Careers
                   </a>
                 </li>
                 <li>
