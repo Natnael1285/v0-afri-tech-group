@@ -40,29 +40,49 @@ export default function SignIn() {
     }
 
     try {
-      // Simulate API call - replace with your actual authentication
-      console.log("Signing in with:", formData)
-      
-      // Mock authentication - replace with real API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // For demo purposes, accept any credentials
-      // In production, validate against your backend
-      if (formData.username && formData.password) {
-        showNotification("Login successful!", "success")
-        
-        // Store auth token or session (in a real app)
-        localStorage.setItem("isAuthenticated", "true")
-        localStorage.setItem("username", formData.username)
-        
-        // Redirect to home page
-        setTimeout(() => {
-          router.push("/dashboard") // Navigate to home page
-        }, 1000)
-      } else {
-        showNotification("Invalid credentials", "error")
+      // Call backend API for authentication
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        // Handle validation errors
+        if (data.errors && Array.isArray(data.errors)) {
+          const errorMessages = data.errors.map((err: any) => err.message).join(", ")
+          showNotification(errorMessages || data.message || "Validation failed", "error")
+        } else {
+          showNotification(data.message || "Login failed. Please try again.", "error")
+        }
+        setIsLoading(false)
+        return
       }
+
+      // Login successful
+      showNotification("Login successful!", "success")
+      
+      // Store authentication state
+      localStorage.setItem("isAuthenticated", "true")
+      localStorage.setItem("username", data.data?.username || formData.username)
+      if (data.accessToken) {
+        localStorage.setItem("accessToken", data.accessToken)
+      }
+      
+      // Redirect to dashboard
+      setTimeout(() => {
+        router.push("/dashboard")
+      }, 1000)
     } catch (error) {
+      console.error("Login error:", error)
       showNotification("Login failed. Please try again.", "error")
     } finally {
       setIsLoading(false)
@@ -174,12 +194,6 @@ export default function SignIn() {
               </div>
             </div>
 
-            {/* Demo Credentials Hint */}
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-muted-foreground text-center">
-                <strong>Demo:</strong> Enter any username and password to sign in
-              </p>
-            </div>
 
             {/* Submit Button */}
             <Button
@@ -198,13 +212,6 @@ export default function SignIn() {
             </Button>
           </form>
 
-          {/* Additional Information */}
-          <div className="mt-6 pt-6 border-t border-border">
-            <div className="text-center text-sm text-muted-foreground">
-              <p>For demo purposes, any credentials will work</p>
-              <p className="mt-1">In production, connect to your authentication system</p>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>

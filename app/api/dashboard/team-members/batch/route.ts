@@ -8,7 +8,11 @@ const batchTeamMemberSchema = z.object({
     name: z.string().min(1, "Name is required").max(100, "Name should not exceed 100 characters"),
     position: z.string().min(1, "Position is required").max(100, "Position should not exceed 100 characters"),
     description: z.string().min(10, "Description should be at least 10 characters long").max(500, "Description should not exceed 500 characters"),
-    photo: z.string().url("Photo must be a valid URL").optional().or(z.literal("")),
+    photo: z.union([
+      z.string().url("Photo must be a valid URL"),
+      z.string().length(0),
+      z.null(),
+    ]).optional().nullable(),
   })).min(1, "At least one team member is required")
 });
 

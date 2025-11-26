@@ -44,8 +44,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const aboutPage = await prisma.aboutPage.create({
-      data: validatedData,
+    // Use raw SQL to handle title field that exists in DB but Prisma client doesn't know about yet
+    // The Prisma client needs to be regenerated after schema changes
+    await prisma.$executeRaw`
+      INSERT INTO "AboutPage" (id, "mission", "vision", description, title, "createdAt", "updatedAt")
+      VALUES (gen_random_uuid()::text, ${validatedData.mission}, ${validatedData.vision}, '', 'About Us', NOW(), NOW())
+    `;
+    
+    // Fetch the created record
+    const aboutPage = await prisma.aboutPage.findFirst({
+      orderBy: { createdAt: 'desc' }
     });
 
     return NextResponse.json(
@@ -103,7 +111,10 @@ export async function PUT(request: NextRequest) {
 
     const aboutPage = await prisma.aboutPage.update({
       where: { id: existingAboutPage.id },
-      data: validatedData,
+      data: {
+        ...validatedData,
+        description: existingAboutPage.description || "", // Preserve existing description or use empty string
+      },
     });
 
     return NextResponse.json(

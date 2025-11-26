@@ -111,8 +111,10 @@ async function requestJSON<T>(input: string, init?: RequestInit): Promise<T> {
   const data = text ? JSON.parse(text) : null
 
   if (!response.ok) {
-    const message = data?.message ?? `Request failed with status ${response.status}`
-    throw new Error(message)
+    // Create an error with the full response data for better error handling
+    const error = new Error(data?.message ?? `Request failed with status ${response.status}`) as Error & { response?: any }
+    error.response = data
+    throw error
   }
 
   return data as T

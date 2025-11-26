@@ -138,8 +138,18 @@ export function TeamManager() {
 
       setEditId(null)
       setFormData(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save team member")
+    } catch (err: any) {
+      // Handle validation errors from backend
+      if (err?.response?.errors && Array.isArray(err.response.errors)) {
+        const errorMessages = err.response.errors.map((e: any) => `${e.field}: ${e.message}`).join(", ")
+        setError(errorMessages || err.response.message || "Validation failed")
+      } else if (err?.response?.message) {
+        setError(err.response.message)
+      } else if (err instanceof Error) {
+        setError(err.message || "Failed to save team member")
+      } else {
+        setError("Failed to save team member")
+      }
     } finally {
       setIsSaving(false)
     }

@@ -15,12 +15,17 @@ export async function POST(req: Request) {
     const body = await req.json();
     const validatedData = signinSchema.parse(body);
 
+    // Find user by username (case-sensitive match)
     const user = await prisma.user.findFirst({
-      where: { username: validatedData.username },
+      where: { 
+        username: validatedData.username
+      },
     });
 
-    if (!user)
+    if (!user) {
+      console.error(`User not found: ${validatedData.username}`);
       return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
 
     const isPasswordValid = await bcrypt.compare(
       validatedData.password,

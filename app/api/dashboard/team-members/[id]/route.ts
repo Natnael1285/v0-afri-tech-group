@@ -7,7 +7,11 @@ const teamMemberSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name should not exceed 100 characters").optional(),
   position: z.string().min(1, "Position is required").max(100, "Position should not exceed 100 characters").optional(),
   description: z.string().min(10, "Description should be at least 10 characters long").max(500, "Description should not exceed 500 characters").optional(),
-  photo: z.string().url("Photo must be a valid URL").optional().or(z.literal("")),
+  photo: z.union([
+    z.string().url("Photo must be a valid URL"),
+    z.string().length(0),
+    z.null(),
+  ]).optional().nullable(),
 });
 
 interface RouteParams {
@@ -52,9 +56,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const body = await request.json();
     const validatedData = teamMemberSchema.parse(body);
 
+    // Normalize empty string photo to null
+    const normalizedData = {
+      ...validatedData,
+      photo: validatedData.photo === "" ? null : validatedData.photo,
+    };
+
     const teamMember = await prisma.teamMember.update({
       where: { id },
-      data: validatedData,
+      data: normalizedData,
     });
 
     return NextResponse.json(
@@ -119,9 +129,15 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Normalize empty string photo to null
+    const normalizedData = {
+      ...validatedData,
+      photo: validatedData.photo === "" ? null : validatedData.photo,
+    };
+
     const teamMember = await prisma.teamMember.update({
       where: { id },
-      data: validatedData,
+      data: normalizedData,
     });
 
     return NextResponse.json(

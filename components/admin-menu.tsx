@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { LogOut, Lock, ChevronDown, X, User, CheckCircle } from "lucide-react"
+import { useState, useEffect } from "react"
+import { LogOut, Lock, ChevronDown, X, User, CheckCircle, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
@@ -13,12 +13,19 @@ interface AdminMenuProps {
 export function AdminMenu({ onNotification }: AdminMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showUsernameModal, setShowUsernameModal] = useState(false)
+  const [currentUsername, setCurrentUsername] = useState<string>("Admin")
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
-    username: "admin" // Default username, you can make this dynamic
   })
+  const [usernameForm, setUsernameForm] = useState({
+    newUsername: "",
+    password: "",
+  })
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [isChangingUsername, setIsChangingUsername] = useState(false)
   const [notification, setNotification] = useState<{ show: boolean; message: string; type: "success" | "error" }>({ 
     show: false, 
     message: "", 
@@ -26,7 +33,47 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
   })
   const router = useRouter()
 
+  // Fetch current username on component mount
+  useEffect(() => {
+    fetchCurrentUsername()
+  }, [])
+
+  const fetchCurrentUsername = async () => {
+    try {
+      // First try localStorage
+      const storedUsername = typeof window !== "undefined" ? localStorage.getItem("username") : null
+      if (storedUsername) {
+        setCurrentUsername(storedUsername)
+      }
+
+      // Then verify with API to get the most up-to-date username
+      const response = await fetch("/api/auth/verify", {
+        method: "GET",
+        credentials: "include",
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.user?.username) {
+          setCurrentUsername(data.user.username)
+          // Update localStorage
+          if (typeof window !== "undefined") {
+            localStorage.setItem("username", data.user.username)
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching username:", error)
+      // Fallback to localStorage if API fails
+      const storedUsername = typeof window !== "undefined" ? localStorage.getItem("username") : null
+      if (storedUsername) {
+        setCurrentUsername(storedUsername)
+      }
+    }
+  }
+
   const adminOptions = [
+    { id: "username", label: "Change Username", icon: User },
     { id: "password", label: "Change Password", icon: Lock },
     { id: "logout", label: "Logout", icon: LogOut },
   ]
@@ -43,13 +90,26 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
     }
   }
 
-  const handleLogout = () => {
-    // In a real app, you might want to clear tokens or session data here
-    showNotification("Logged out successfully", "success")
-    router.push("/")
+  const handleLogout = async () => {
+    try {
+      // Call logout API to clear server-side session
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      })
+    } catch (error) {
+      console.error("Logout error:", error)
+    } finally {
+      // Clear client-side storage
+      localStorage.removeItem("isAuthenticated")
+      localStorage.removeItem("username")
+      localStorage.removeItem("accessToken")
+      showNotification("Logged out successfully", "success")
+      router.push("/")
+    }
   }
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     // Validate form
     if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
       showNotification("Please fill in all fields", "error")
@@ -66,20 +126,110 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
       return
     }
 
-    // In a real app, you would make an API call here to change the password
-    console.log("Changing password for:", passwordForm.username)
-    console.log("Current password:", passwordForm.currentPassword)
-    console.log("New password:", passwordForm.newPassword)
+    setIsChangingPassword(true)
 
-    // Show success message and close modal
-    showNotification("Password changed successfully!", "success")
-    setShowPasswordModal(false)
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-      username: "admin"
-    })
+    try {
+      const response = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        if (data.errors && Array.isArray(data.errors)) {
+          const errorMessages = data.errors.map((e: any) => e.message).join(", ")
+          showNotification(errorMessages || data.message || "Failed to change password", "error")
+        } else {
+          showNotification(data.message || "Failed to change password", "error")
+        }
+        return
+      }
+
+      showNotification("Password changed successfully!", "success")
+      setShowPasswordModal(false)
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      })
+    } catch (error) {
+      console.error("Password change error:", error)
+      showNotification("Failed to change password. Please try again.", "error")
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
+
+  const handleChangeUsername = async () => {
+    // Validate form
+    if (!usernameForm.newUsername || !usernameForm.password) {
+      showNotification("Please fill in all fields", "error")
+      return
+    }
+
+    if (usernameForm.newUsername.length < 1) {
+      showNotification("Username is required", "error")
+      return
+    }
+
+    setIsChangingUsername(true)
+
+    try {
+      const response = await fetch("/api/auth/change-password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          newUsername: usernameForm.newUsername,
+          password: usernameForm.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        if (data.errors && Array.isArray(data.errors)) {
+          const errorMessages = data.errors.map((e: any) => e.message).join(", ")
+          showNotification(errorMessages || data.message || "Failed to change username", "error")
+        } else {
+          showNotification(data.message || "Failed to change username", "error")
+        }
+        return
+      }
+
+      // Update localStorage with new username
+      if (data.data?.username) {
+        localStorage.setItem("username", data.data.username)
+        setCurrentUsername(data.data.username)
+      }
+
+      showNotification("Username changed successfully! Please login again with your new username.", "success")
+      setShowUsernameModal(false)
+      setUsernameForm({
+        newUsername: "",
+        password: "",
+      })
+      
+      // Optionally redirect to login after a delay
+      setTimeout(() => {
+        handleLogout()
+      }, 2000)
+    } catch (error) {
+      console.error("Username change error:", error)
+      showNotification("Failed to change username. Please try again.", "error")
+    } finally {
+      setIsChangingUsername(false)
+    }
   }
 
   const closePasswordModal = () => {
@@ -88,7 +238,14 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
-      username: "admin"
+    })
+  }
+
+  const closeUsernameModal = () => {
+    setShowUsernameModal(false)
+    setUsernameForm({
+      newUsername: "",
+      password: "",
     })
   }
 
@@ -102,7 +259,7 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
           className="flex items-center gap-2 border-sidebar-border hover:bg-sidebar-accent/20"
         >
           <Lock className="h-4 w-4" />
-          <span>Admin</span>
+          <span>{currentUsername}</span>
           <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
         </Button>
 
@@ -119,6 +276,8 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
                       handleLogout()
                     } else if (option.id === "password") {
                       setShowPasswordModal(true)
+                    } else if (option.id === "username") {
+                      setShowUsernameModal(true)
                     }
                   }}
                   className="flex items-center gap-3 w-full px-4 py-3 text-sm hover:bg-primary/10 hover:text-primary transition-colors first:rounded-t-lg last:rounded-b-lg border-b border-border last:border-b-0"
@@ -180,22 +339,6 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
 
             {/* Modal Content */}
             <div className="p-6 space-y-4">
-              {/* Username Field */}
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Username
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    value={passwordForm.username}
-                    onChange={(e) => setPasswordForm({ ...passwordForm, username: e.target.value })}
-                    className="w-full pl-10"
-                    placeholder="Enter username"
-                  />
-                </div>
-              </div>
-
               {/* Current Password */}
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">
@@ -253,14 +396,105 @@ export function AdminMenu({ onNotification }: AdminMenuProps) {
 
             {/* Modal Footer */}
             <div className="flex justify-end space-x-2 p-6 border-t border-border bg-muted/20">
-              <Button variant="outline" onClick={closePasswordModal}>
+              <Button variant="outline" onClick={closePasswordModal} disabled={isChangingPassword}>
                 Cancel
               </Button>
               <Button 
-                onClick={handleChangePassword} 
+                onClick={handleChangePassword}
+                disabled={isChangingPassword}
                 className="bg-[#345143] text-white hover:bg-[#2a4037]"
               >
-                Change Password
+                {isChangingPassword ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Changing...
+                  </>
+                ) : (
+                  "Change Password"
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Change Username Modal */}
+      {showUsernameModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-lg shadow-lg max-w-md w-full">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <div className="flex items-center gap-3">
+                <User className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">Change Username</h3>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={closeUsernameModal}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-4">
+              {/* New Username */}
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block">
+                  New Username
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    value={usernameForm.newUsername}
+                    onChange={(e) => setUsernameForm({ ...usernameForm, newUsername: e.target.value })}
+                    className="w-full pl-10"
+                    placeholder="Enter new username"
+                  />
+                </div>
+              </div>
+
+              {/* Password Confirmation */}
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block">
+                  Current Password
+                </label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Enter your current password to confirm username change
+                </p>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="password"
+                    value={usernameForm.password}
+                    onChange={(e) => setUsernameForm({ ...usernameForm, password: e.target.value })}
+                    className="w-full pl-10"
+                    placeholder="Enter current password"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end space-x-2 p-6 border-t border-border bg-muted/20">
+              <Button variant="outline" onClick={closeUsernameModal} disabled={isChangingUsername}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleChangeUsername}
+                disabled={isChangingUsername}
+                className="bg-[#345143] text-white hover:bg-[#2a4037]"
+              >
+                {isChangingUsername ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Changing...
+                  </>
+                ) : (
+                  "Change Username"
+                )}
               </Button>
             </div>
           </div>
