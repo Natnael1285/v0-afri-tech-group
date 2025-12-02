@@ -66,6 +66,14 @@ export interface AboutPage {
   updatedAt: string
 }
 
+export interface System {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface PaginationMeta {
   page: number
   limit: number
@@ -96,6 +104,7 @@ type ProjectPayload = Pick<Project, "name" | "description" | "link" | "photo">
 type ContactInfoPayload = Pick<ContactInfo, "address" | "phone" | "email">
 type LocationPayload = Pick<LocationInfo, "mapLink">
 type AboutPayload = Pick<AboutPage, "mission" | "vision">
+type SystemPayload = Pick<System, "name" | "description">
 
 async function requestJSON<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, {
@@ -219,6 +228,21 @@ export const dashboardApi = {
         method: hasExisting ? "PUT" : "POST",
         body: JSON.stringify(payload),
       }).then((res) => res.data),
+  },
+  systems: {
+    list: () => requestJSON<System[]>("/api/dashboard/systems"),
+    create: (payload: SystemPayload) =>
+      requestJSON<ApiResponse<System>>("/api/dashboard/systems", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }).then((res) => res.data),
+    update: (id: string, payload: SystemPayload) =>
+      requestJSON<ApiResponse<System>>(`/api/dashboard/systems/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }).then((res) => res.data),
+    delete: (id: string) =>
+      requestJSON<MessageResponse>(`/api/dashboard/systems/${id}`, { method: "DELETE" }),
   },
 }
 

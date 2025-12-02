@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Menu, X, Home, Wrench, Users, Phone, PhoneIncoming, Info } from "lucide-react"
+import { Menu, X, Home, Wrench, Users, Phone, PhoneIncoming, Info, Server } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "./theme-toggle"
@@ -19,6 +19,7 @@ const navItems = [
   { id: "services", label: "Services", icon: Wrench },
   { id: "team", label: "Team Members", icon: Users },
   { id: "project", label: "Projects", icon: Wrench },
+  { id: "systems", label: "Systems", icon: Server },
   { id: "contact", label: "Contact Info", icon: Phone },
   { id: "about", label: "About", icon: Info  },
 ]

@@ -9,6 +9,7 @@ import { TeamManager } from "@/components/team-manager"
 import { ContactManager } from "@/components/contact-manager"
 import { AboutManager } from "@/components/about-manager"
 import { ProjectsManager } from "@/components/project-manager"
+import { SystemsManager } from "@/components/systems-manager"
 import { Loader2 } from "lucide-react"
 
 export default function Page() {
@@ -77,8 +78,9 @@ export default function Page() {
       case "team":
         return <TeamManager />
       case "project":
-        return<ProjectsManager/> 
-        
+        return <ProjectsManager />
+      case "systems":
+        return <SystemsManager />
       case "contact":
         return <ContactManager />
       case "about":
